@@ -5,6 +5,13 @@
 格式基于 [Keep a Changelog](https://keepachangelog.com/zh-CN/1.0.0/)，
 版本号遵循 [Semver](https://semver.org/lang/zh-CN/)。
 
+## [1.1.0] - 2026-08-17
+
+### Added
+- 【business-logic-init】新增「业务逻辑白皮书」建档/查漏 skill（由原 business-logic-workflow 拆分）
+- 【business-logic-improve】新增业务逻辑完善/优化 skill（三顶帽子 + 对抗式审查门 + 实施计划）
+- 【business-logic-execute】新增实施计划落地代码 skill（分步执行 + 验证分层 + 白皮书同步）
+
 ## [1.0.0] - 2026-08-17
 
 ### Added

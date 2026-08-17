@@ -8,6 +8,9 @@
 |---|---|
 | `git-flow` | 团队 Git Flow 开发流程规范 |
 | `skill-release-manager` | skill/plugin 版本管理与发布工具 |
+| `business-logic:init` | 建立并维护「业务逻辑白皮书」（建档 / 查漏补缺） |
+| `business-logic:improve` | 完善/优化业务逻辑（三顶帽子 + 对抗式审查门 + 实施计划） |
+| `business-logic:execute` | 照实施计划落地代码 + 同步白皮书 |
 
 ## 目录结构
 
@@ -18,7 +21,10 @@ only-paint-skills/
 │   └── marketplace.json     ← 对外分发索引
 ├── skills/
 │   ├── git-flow/
-│   └── skill-release-manager/
+│   ├── skill-release-manager/
+│   ├── business-logic-init/
+│   ├── business-logic-improve/
+│   └── business-logic-execute/
 ├── CHANGELOG.md
 └── README.md
 ```
@@ -32,7 +38,12 @@ only-paint-skills/
 ```
 ~/.claude/skills/git-flow              → <本仓库>/skills/git-flow
 ~/.claude/skills/skill-release-manager → <本仓库>/skills/skill-release-manager
+~/.claude/skills/business-logic-init      → <本仓库>/skills/business-logic-init
+~/.claude/skills/business-logic-improve   → <本仓库>/skills/business-logic-improve
+~/.claude/skills/business-logic-execute   → <本仓库>/skills/business-logic-execute
 ```
+
+> Windows 下建 symlink 请用 PowerShell 的 `New-Item -ItemType SymbolicLink`，git bash 的 `ln -s` 会回退成复制。
 
 ### 分发态（给别人用，版本化快照）
 
