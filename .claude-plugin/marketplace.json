@@ -15,10 +15,10 @@
       "category": "development",
       "source": {
         "source": "url",
-        "url": "https://github.com/<你的GitHub用户名>/only-paint-skills.git",
+        "url": "https://github.com/Paint-draw/only-paint-skills.git",
         "ref": "v1.0.0"
       },
-      "homepage": "https://github.com/<你的GitHub用户名>/only-paint-skills"
+      "homepage": "https://github.com/Paint-draw/only-paint-skills"
     }
   ]
 }
