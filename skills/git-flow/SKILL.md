@@ -38,7 +38,7 @@ description: >-
 | 已有 master+dev，用户要开发新功能/改代码 | 场景 2：功能开发 | `references/scenario-feature.md` |
 | 功能合完，用户要提测/发布版本 | 场景 3：提测发布 | `references/scenario-release.md` |
 | 已上线（有 tag），线上出 bug 要紧急修复 | 场景 4：线上修复 | `references/scenario-hotfix.md` |
-| 用户只是要提交/合并/推送/写 commit | 通用动作 | 见下方红线 + `references/commit-convention.md` |
+| 用户只是要提交/合并/推送/写 commit | 通用动作 | 见下方红线 + `references/commit-convention.md` + `references/readme-sync.md` |
 
 判断不明确时，用一句话向用户确认所处阶段，再执行——不要猜错场景。
 
@@ -51,6 +51,7 @@ description: >-
 5. **一个 commit 只做一件事**，不要「修 bug 顺带改了一堆无关功能」。
 6. **`release` 和 `hotfix` 必须同时合并回 `master` 和 `dev`**，否则会出现「线上修好了、开发线还在报错」的分叉。
 7. 合并/切分支前先 `git status` 确认工作区干净，避免把未完成改动带走。
+8. **提交/推送前按需同步 README.md**：任何 `git commit` / `git push` 前，若本次改动影响项目功能/实现描述（新增/修改/删除功能、接口/命令/配置变化），必须先更新 README.md 使描述与最新实现一致，再连同代码一起提交。琐碎改动（typo、注释、格式、纯重构）不触发。判断流程见 `references/readme-sync.md`。
 
 ## 第二步：按场景输出可执行命令
 
@@ -59,6 +60,7 @@ description: >-
 ## 提交规范
 
 任何涉及 `git commit` 的动作，先读 `references/commit-convention.md`，按 `type(scope): subject` 格式写 commit message。
+提交前先读 `references/readme-sync.md` 判断本次改动是否需要同步 README.md：有功能/实现变化，先更新 README 再与代码同一次提交，避免文档与历史脱节。
 
 ## 常用命令速查
 

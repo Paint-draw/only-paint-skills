@@ -6,7 +6,7 @@
 
 | skill | 说明 |
 |---|---|
-| `git-flow` | 团队 Git Flow 开发流程规范 |
+| `git-flow` | 团队 Git Flow 开发流程规范（提交/推送时按需同步 README） |
 | `skill-release-manager` | skill/plugin 版本管理与发布工具 |
 | `business-logic:init` | 建立并维护「业务逻辑白皮书」（建档 / 查漏补缺） |
 | `business-logic:improve` | 完善/优化业务逻辑（三顶帽子 + 对抗式审查门 + 实施计划） |

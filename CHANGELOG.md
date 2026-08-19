@@ -5,6 +5,11 @@
 格式基于 [Keep a Changelog](https://keepachangelog.com/zh-CN/1.0.0/)，
 版本号遵循 [Semver](https://semver.org/lang/zh-CN/)。
 
+## [1.2.0] - 2026-08-19
+
+### Changed
+- 【git-flow】新增红线 8：提交/推送前按需同步 README.md，确保 README 描述当前最新实现（新增 `references/readme-sync.md` 判断流程）
+
 ## [1.1.0] - 2026-08-17
 
 ### Added
