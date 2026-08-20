@@ -41,7 +41,7 @@
 ```markdown
 # [Feature Name] Implementation Plan
 
-> **For agentic workers:** Steps use checkbox (`- [ ]`) syntax for tracking. 执行阶段用 `business-logic:execute` 落地。
+> **For agentic workers:** Steps use checkbox (`- [ ]`) syntax for tracking. 执行阶段用 `business-logic-execute` 落地。
 
 **Goal:** [一句话描述要构建什么]
 
@@ -125,4 +125,4 @@ git commit -m "feat: add specific feature"
 
 ## 执行交接
 
-存完计划后提供执行选择——模式② 的最终去向是 `business-logic:execute`。
+存完计划后提供执行选择——模式② 的最终去向是 `business-logic-execute`。

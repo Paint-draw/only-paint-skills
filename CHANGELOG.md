@@ -5,6 +5,11 @@
 格式基于 [Keep a Changelog](https://keepachangelog.com/zh-CN/1.0.0/)，
 版本号遵循 [Semver](https://semver.org/lang/zh-CN/)。
 
+## [1.2.1] - 2026-08-19
+
+### Changed
+- 【business-logic-init / business-logic-improve / business-logic-execute】skill `name` 与全部交叉引用统一为连字符形式，符合技能命名规范（仅字母/数字/连字符）
+
 ## [1.2.0] - 2026-08-19
 
 ### Changed

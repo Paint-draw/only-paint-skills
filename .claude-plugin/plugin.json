@@ -1,7 +1,7 @@
 {
   "name": "only-paint-skills",
   "description": "个人 skill 集合：Git Flow 开发流程规范、Skill 版本管理与发布、业务逻辑白皮书工作流（建档 init / 优化 improve / 落地 execute）",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "author": {
     "name": "限定涂鸦",
     "email": "3546234037@qq.com"

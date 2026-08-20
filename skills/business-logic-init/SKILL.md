@@ -1,6 +1,6 @@
 ---
-name: business-logic:init
-description: 建立/补全项目的「业务逻辑白皮书」文档体系——扫描全项目（后端+前端）穷尽业务模块，每块业务建 docs/business-logic/<模块>.md，并生成根目录总览索引；已有白皮书时查漏补缺（补的是文档缺模块/缺章节，不是改业务规则）。产出是**文档体系**，不写业务代码。用户说「给项目做（业务逻辑）白皮书」「梳理业务模块并建档」「建立业务文档体系」「这项目有哪些业务/模块」「建档」「补文档缺口」时必须用我；已有白皮书、要完善/改造某块业务逻辑时用 business-logic:improve；已有实施计划要写代码时用 business-logic:execute。
+name: business-logic-init
+description: 建立/补全项目的「业务逻辑白皮书」文档体系——扫描全项目（后端+前端）穷尽业务模块，每块业务建 docs/business-logic/<模块>.md，并生成根目录总览索引；已有白皮书时查漏补缺（补的是文档缺模块/缺章节，不是改业务规则）。产出是**文档体系**，不写业务代码。用户说「给项目做（业务逻辑）白皮书」「梳理业务模块并建档」「建立业务文档体系」「这项目有哪些业务/模块」「建档」「补文档缺口」时必须用我；已有白皮书、要完善/改造某块业务逻辑时用 business-logic-improve；已有实施计划要写代码时用 business-logic-execute。
 ---
 
 # 业务逻辑白皮书 · 建立与维护（Init）
@@ -22,13 +22,13 @@ description: 建立/补全项目的「业务逻辑白皮书」文档体系——
 | 情况 | 分支 | 能否跳过 |
 |------|------|----------|
 | 项目**还没有**白皮书 | **建立白皮书**（见下） | — |
-| 白皮书存在、但某模块为 `待补全`/`草稿` | **查漏补缺**（见 `references/mode1-init.md` 第五节） | 用户只关心某一模块 → 建议先补该模块，或转 `business-logic:improve` |
-| 白皮书存在、目标模块 `已核对`、用户说要"完善/改/优化" | **不是我管** → 提示用户用 `business-logic:improve` | — |
-| 用户要"照文档写代码" | **不是我管** → 提示用户用 `business-logic:execute` | — |
+| 白皮书存在、但某模块为 `待补全`/`草稿` | **查漏补缺**（见 `references/mode1-init.md` 第五节） | 用户只关心某一模块 → 建议先补该模块，或转 `business-logic-improve` |
+| 白皮书存在、目标模块 `已核对`、用户说要"完善/改/优化" | **不是我管** → 提示用户用 `business-logic-improve` | — |
+| 用户要"照文档写代码" | **不是我管** → 提示用户用 `business-logic-execute` | — |
 
 判断依据：先看根目录《业务逻辑白皮书》(或 `docs/business-logic/`) 是否存在、目标模块状态到没到 `已核对`，再看用户意图。
 
-**与其他技能的关系**：我是流水线第一环。如果用户已完成建档、要优化某块业务逻辑，引导到 `business-logic:improve`；如果要照计划文档写代码，引导到 `business-logic:execute`。
+**与其他技能的关系**：我是流水线第一环。如果用户已完成建档、要优化某块业务逻辑，引导到 `business-logic-improve`；如果要照计划文档写代码，引导到 `business-logic-execute`。
 
 ## 贯穿全程的硬约束
 
@@ -55,7 +55,7 @@ docs/business-logic/
 2. **完整扫描 + 枚举全部业务模块**：按 `references/mode1-init.md` 的后端驱动扫描顺序穷尽扫描（Controller/Service → 定时任务 → 回调 → 枚举 → 数据表 → 前端验证），**以业务能力聚合、不以菜单划分**；纯后端五类逐项核对；每张数据库表必须归入一个模块。候选清单**呈现给用户确认增删合并**。
 3. **按模块拆子任务/子代理逐个建档**：模块多时用 `superpowers:dispatching-parallel-agents`，每份 `docs/business-logic/<模块>.md` 严格按 `references/module-doc-spec.md` 填满。
 4. **完整性交叉复核 + 生成根白皮书**：按 `references/mode1-init.md` 第四节清单逐项打勾；漏了补建。用 `assets/业务逻辑白皮书.template.md` 生成根白皮书 + 在 `CLAUDE.md` 加指针引用。
-5. **交接**：汇报建了多少模块、几端、哪些待补全；**问用户**是否进完善或执行阶段（引导到 `business-logic:improve` 或 `business-logic:execute`）。
+5. **交接**：汇报建了多少模块、几端、哪些待补全；**问用户**是否进完善或执行阶段（引导到 `business-logic-improve` 或 `business-logic-execute`）。
 
 ## 分支 B：已存在 → 查漏补缺
 
