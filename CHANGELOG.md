@@ -5,6 +5,12 @@
 格式基于 [Keep a Changelog](https://keepachangelog.com/zh-CN/1.0.0/)，
 版本号遵循 [Semver](https://semver.org/lang/zh-CN/)。
 
+## [1.3.0] - 2026-08-25
+
+### Added
+- 【skill-release-manager】新增「更新 skill」流：改 skill 内容时自动路由到 skill-creator 或 superpowers:writing-skills 进行内容更新，改完接回发版流
+- 【skill-release-manager】description 补「编辑/改动 skill 内容」触发词；新增更新已存在 skill 的注意事项
+
 ## [1.2.1] - 2026-08-19
 
 ### Changed

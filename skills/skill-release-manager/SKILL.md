@@ -3,14 +3,16 @@ name: skill-release-manager
 description: >-
   管理并发布个人 Skill / Plugin 的新版本。当用户要维护、更新、迭代、发布自己的 plugin（一个 plugin 装多个 skill）时使用——
   例如「更新我的 skill」「给这个 plugin 发个新版本」「升级版本号」「打 tag 发布」「帮我把这个 plugin 发布出去」，
-  或刚改完 plugin 仓库里 skills/ 下某个 skill 的内容、要把它推进到可分发的新版本时。
+  或刚改完 plugin 仓库里 skills/ 下某个 skill 的内容、要把它推进到可分发的新版本时；
+  或当你要【编辑/改动某个 skill 的内容】（加功能、改描述、优化触发、修 bug）时，
+  本 skill 会先路由到 skill-creator 或 superpowers:writing-skills 把内容改好，再进入发版。
   本 skill 面向「方案 B：一个 plugin 整体发版」结构——一个 plugin.json 用一个 version 管 skills/ 下所有 skill。
   它会：探测 plugin 仓库 → 分析 skills/ 下本次改动并判断 semver 递增 → 同步 plugin.json 的 version 与 marketplace.json 的 ref →
   更新 CHANGELOG（标注动了哪个 skill）→ git commit + tag + push → 跑检查清单，拦截「两个 JSON 不同 commit」「tag 与 version 不一致」等易错点。
   即使用户没明说「发布」，只要在维护一个 plugin 仓库并改了 skill，就应考虑使用本 skill。
 ---
 
-# Skill / Plugin 版本管理与发布（方案 B：一个 plugin 整体发版）
+# Skill / Plugin 版本管理与发布（一个 plugin 整体发版）
 
 把一个「已经改完内容的 plugin 仓库」推进到「可分发的新版本」：自动定版本号、同步三个文件、走完 git 流程、兜底易错点。
 
@@ -38,6 +40,46 @@ description: >-
 - **一次发布 = 一个 commit**：`plugin.json`、`marketplace.json`、`CHANGELOG.md` 三个文件同一个 commit，这是最高频事故点。
 - **tag 名带 `v` 前缀**：version `1.2.0` → tag `v1.2.0`，marketplace 的 `ref` 也写 `v1.2.0`。
 - **push 前必须让用户确认一次**，push + `push --tags` 是唯一不可逆动作。
+
+## 第〇步：决定「改内容」还是「只发版」（可选前置）
+
+用户说「更新/编辑/改动我的 skill」时，先判断这次要不要改内容：
+
+```
+你要更新的是哪个 skill？这次是「改内容」还是「内容已完成、只发版」？
+```
+
+- **只发版** → 跳到【第一步】直接按原有流程走。
+- **改内容** → 按下面的路由表选工具，改完后接回【第一步】发版。
+
+### 改内容：自动路由（可手动改）
+
+| 这次要改什么 | 自动推荐 | 理由 |
+|---|---|---|
+| 加功能 / 改触发词 / 优化描述 / 改错别字 / 参考文档类 | **skill-creator** | 快、按规范生成、自带描述优化与 eval |
+| 纪律/行为类 skill，要「改得 agent 不再钻空子」、要做严格验证 | **superpowers:writing-skills** | TDD 压力测试、理性化表格、防绕过 |
+| 拿不准 | skill-creator（推荐，展示可改选） | 兜底 |
+
+**展示给用户确认**，形如：
+
+```
+检测到要更新 skill：git-flow
+改动类型：加触发场景 + 优化描述 → 推荐 skill-creator
+要换成 superpowers:writing-skills 吗？（纪律/需严格验证才换）
+```
+
+用户可改选另一个工具。选定后**用 skill 名调用**（`skill-creator` 或 `superpowers:writing-skills`），`Skill` 工具加载即可，不要用 `@` 强载。
+
+### 改完后回发版
+
+改完内容后用只读命令确认是否真的有变化：
+
+```bash
+git -C <仓库> status --short
+```
+
+- **有变化** → 接回【第一步】，按发版流程走完（定版本号、同步三文件、commit/tag/push）。
+- **没变化** → 结束，不做无意义的发版。
 
 ## 第一步：定位 plugin 仓库
 
@@ -150,6 +192,15 @@ git push --tags
 | 用户 update 看不到新版本 | 只改了 plugin.json 没改 marketplace.json | 同 commit 重发 |
 | 安装后还是旧版 | installed_plugins.json 缓存未刷新 | 提示重装或删缓存目录 |
 | git push 报 tag 冲突 | tag 已存在或与 version 不一致 | 核对 git tag，必要时删本地错误 tag 重打（未 push 前） |
+| 改完内容但版本没变 / 没发新版 | 第〇步判定为「只改内容不需发版」，但用户其实要发 | 检查第〇步，改内容后接【第一步】发版流 |
+
+---
+
+## 更新已存在的 skill（注意事项）
+
+- **保留原名**：目录名与 frontmatter 的 `name` 保持原样，不要改成 `xxxx-v2`。
+- **只读目录先拷贝**：安装路径可能只读，先把该 skill 拷到可写位置再改，改完从拷贝处打包/回填。
+- **更新的是本 skill 自己**：改完 skill-release-manager 或同仓库其它 skill 本身后，照样走第〇步→发版流，给整个 plugin 升一次版本。
 
 ---
 
