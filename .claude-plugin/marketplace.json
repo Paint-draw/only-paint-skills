@@ -1,14 +1,14 @@
 {
   "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
   "name": "only-paint-skills",
-  "description": "个人 skill 集合：Git Flow 开发流程规范、Skill 版本管理与发布",
+  "description": "个人 skill 集合：Git Flow 开发流程规范、Skill 版本管理与发布、业务逻辑工作流（建档/优化/落地/审计/需求文档/规格抽取）",
   "owner": {
     "name": "限定涂鸦"
   },
   "plugins": [
     {
       "name": "only-paint-skills",
-      "description": "个人 skill 集合：Git Flow 开发流程规范、Skill 版本管理与发布",
+      "description": "个人 skill 集合：Git Flow 开发流程规范、Skill 版本管理与发布、业务逻辑工作流（建档/优化/落地/审计/需求文档/规格抽取）",
       "author": {
         "name": "限定涂鸦"
       },
@@ -16,7 +16,7 @@
       "source": {
         "source": "url",
         "url": "https://github.com/Paint-draw/only-paint-skills.git",
-        "ref": "v1.3.0"
+        "ref": "v1.4.0"
       },
       "homepage": "https://github.com/Paint-draw/only-paint-skills"
     }

@@ -1,6 +1,6 @@
 ---
 name: business-logic-init
-description: 建立/补全项目的「业务逻辑白皮书」文档体系——扫描全项目（后端+前端）穷尽业务模块，每块业务建 docs/business-logic/<模块>.md，并生成根目录总览索引；已有白皮书时查漏补缺（补的是文档缺模块/缺章节，不是改业务规则）。产出是**文档体系**，不写业务代码。用户说「给项目做（业务逻辑）白皮书」「梳理业务模块并建档」「建立业务文档体系」「这项目有哪些业务/模块」「建档」「补文档缺口」时必须用我；已有白皮书、要完善/改造某块业务逻辑时用 business-logic-improve；已有实施计划要写代码时用 business-logic-execute。
+description: 从零建立项目的「业务逻辑白皮书」体系——根目录一份总览索引 + docs/business-logic/ 每模块一份详细文档。完整扫描后端+前端穷尽所有业务模块，按模块拆子代理并行建档，交叉复核不漏。当用户说「给项目做白皮书」「梳理业务模块」「建立业务文档体系」「这个项目有哪些业务」「建档」「查漏补缺」时必须使用。
 ---
 
 # 业务逻辑白皮书 · 建立与维护（Init）
@@ -68,7 +68,7 @@ docs/business-logic/
 | 场景 | 技能 |
 |------|------|
 | 模块多、并行建档 | `superpowers:dispatching-parallel-agents` |
-| 抽取纯业务流程做辅助（可选） | `business-logic-extractor` |
+| 抽取纯业务流程做辅助（可选） | 复用 `business-logic-improve/references/business-logic-extractor.md`（已内联） |
 | 完整性交叉复核 | 按 `references/mode1-init.md` 第四节清单逐项打勾 |
 
 ## 铁律速查

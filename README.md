@@ -11,6 +11,9 @@
 | `business-logic-init` | 建立并维护「业务逻辑白皮书」（建档 / 查漏补缺） |
 | `business-logic-improve` | 完善/优化业务逻辑（三顶帽子 + 对抗式审查门 + 实施计划） |
 | `business-logic-execute` | 照实施计划落地代码 + 同步白皮书 |
+| `business-logic-hunt` | 业务逻辑审计/查漏（双向核对 + 六类清单，只查不改） |
+| `business-logic-reqdoc` | 现状业务反写成需求文档（零实现标识，供业务方评审） |
+| `business-logic-extractor` | 从代码抽取技术栈无关的可移植业务规格文档 |
 
 ## 目录结构
 
@@ -24,7 +27,10 @@ only-paint-skills/
 │   ├── skill-release-manager/
 │   ├── business-logic-init/
 │   ├── business-logic-improve/
-│   └── business-logic-execute/
+│   ├── business-logic-execute/
+│   ├── business-logic-hunt/
+│   ├── business-logic-reqdoc/
+│   └── business-logic-extractor/
 ├── CHANGELOG.md
 └── README.md
 ```
@@ -41,6 +47,9 @@ only-paint-skills/
 ~/.claude/skills/business-logic-init      → <本仓库>/skills/business-logic-init
 ~/.claude/skills/business-logic-improve   → <本仓库>/skills/business-logic-improve
 ~/.claude/skills/business-logic-execute   → <本仓库>/skills/business-logic-execute
+~/.claude/skills/business-logic-hunt      → <本仓库>/skills/business-logic-hunt
+~/.claude/skills/business-logic-reqdoc    → <本仓库>/skills/business-logic-reqdoc
+~/.claude/skills/business-logic-extractor → <本仓库>/skills/business-logic-extractor
 ```
 
 > Windows 下建 symlink 请用 PowerShell 的 `New-Item -ItemType SymbolicLink`，git bash 的 `ln -s` 会回退成复制。
