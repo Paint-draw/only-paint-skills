@@ -5,6 +5,15 @@
 格式基于 [Keep a Changelog](https://keepachangelog.com/zh-CN/1.0.0/)，
 版本号遵循 [Semver](https://semver.org/lang/zh-CN/)。
 
+## [Unreleased]
+
+## [1.5.0] - 2026-10-24
+
+### Added
+- 【tech-to-md】新增「技术底层实现文档」写作 skill：照代码取证书写模块机制链条、层间数据形状、设计理由与取舍、被否方案与证据强度，产物遵循《技术文档体例》（六类必写 / 五类禁写 / 五要素 / 三块收尾）；附取证指南、自查清单、文档模板与 `scripts/check-doc.py` 禁写项自检，并支持文末「速答卡」与旧文档增量维护
+- 【tech-faq-drill】新增「技术问答演练」skill：用户扮演面试官提问、Claude 扮演被面试者，基于 `docs/` 技术文档与代码真实实现作答；答案按「结论 → 机制 → 取舍与代价 → 边界」组织成可直接照念的口述稿，文档与代码冲突时以代码为准并在核对区说明；问答追加进 `docs/FAQ/FAQ.md` 单一问答池（Q 号全局递增、同义问题原地更新），附作答体例、定位核对指南、FAQ 体例、模板与 `scripts/check-faq.py` 索引一致性自检
+- 【plugin】`plugin.json` / `marketplace.json` / `README.md` 登记两个新 skill，marketplace 描述补齐技术类 skill
+
 ## [1.4.0] - 2026-09-21
 
 ### Added
