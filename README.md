@@ -16,6 +16,7 @@
 | `business-logic-extractor` | 从代码抽取技术栈无关的可移植业务规格文档 |
 | `tech-to-md` | 把已实现的模块写成技术底层实现文档（机制链条 + 设计取舍 + 证据强度 + 速答卡） |
 | `tech-faq-drill` | 面试式问答演练：按技术文档 + 代码实现作答，答案可直接照念，并把问答沉淀成 `docs/FAQ` |
+| `test-report-html` | 把测试证据（surefire / JUnit / pytest 报告 + 运行时结果）整理成单文件 HTML 测试报告；脚本与结果统一收进项目 `test/`，数字全部可追溯 |
 
 ## 目录结构
 
@@ -34,7 +35,8 @@ only-paint-skills/
 │   ├── business-logic-reqdoc/
 │   ├── business-logic-extractor/
 │   ├── tech-to-md/
-│   └── tech-faq-drill/
+│   ├── tech-faq-drill/
+│   └── test-report-html/
 ├── CHANGELOG.md
 └── README.md
 ```
@@ -56,6 +58,7 @@ only-paint-skills/
 ~/.claude/skills/business-logic-extractor → <本仓库>/skills/business-logic-extractor
 ~/.claude/skills/tech-to-md               → <本仓库>/skills/tech-to-md
 ~/.claude/skills/tech-faq-drill           → <本仓库>/skills/tech-faq-drill
+~/.claude/skills/test-report-html         → <本仓库>/skills/test-report-html
 ```
 
 > Windows 下建 symlink 请用 PowerShell 的 `New-Item -ItemType SymbolicLink`，git bash 的 `ln -s` 会回退成复制。

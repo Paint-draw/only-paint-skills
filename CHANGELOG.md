@@ -7,6 +7,12 @@
 
 ## [Unreleased]
 
+## [1.6.0] - 2026-10-29
+
+### Added
+- 【test-report-html】新增「测试报告生成」skill：把项目的测试证据整理成单文件 HTML 内测报告。两段式——`collect_evidence.py` 扫 surefire / Gradle / pytest / JUnit 报告与 `test/results/*.json` 汇总出 `test/evidence.json`（用例数只认 `<testcase>`，避免 `@Nested` 少报造成的假绿），`build_report.py` 把 `report.json` 里的 `{{tests.total}}` 占位符换成读数并渲染；占位符解不出、卡片用无出处的手写数字时直接拒绝出报告。附 `init_test_dir.py` 铺设统一 `test/` 目录、`assets/harness.py` 端到端骨架、`assets/smoke_matrix.py` 角色 × 接口冒烟骨架，以及报告体例 / 证据来源 / test 目录规范三份 references
+- 【plugin】`plugin.json` 升 1.6.0 并登记新 skill，`marketplace.json` ref 同步 `v1.6.0`，README 补条目与软链说明
+
 ## [1.5.0] - 2026-10-24
 
 ### Added

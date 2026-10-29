@@ -1,13 +1,13 @@
 {
   "name": "only-paint-skills",
-  "description": "个人 skill 集合：Git Flow 开发流程规范、Skill 版本管理与发布、业务逻辑工作流（建档 init / 优化 improve / 落地 execute / 审计 hunt / 需求文档 reqdoc / 规格抽取 extractor）、技术底层实现文档写作（tech-to-md）、技术问答演练与 FAQ 沉淀（tech-faq-drill）",
-  "version": "1.5.0",
+  "description": "个人 skill 集合：Git Flow 开发流程规范、Skill 版本管理与发布、业务逻辑工作流（建档 init / 优化 improve / 落地 execute / 审计 hunt / 需求文档 reqdoc / 规格抽取 extractor）、技术底层实现文档写作（tech-to-md）、技术问答演练与 FAQ 沉淀（tech-faq-drill）、测试证据生成内测报告（test-report-html）",
+  "version": "1.6.0",
   "author": {
     "name": "限定涂鸦",
     "email": "3546234037@qq.com"
   },
   "license": "MIT",
-  "keywords": ["git-flow", "skill-release-manager", "business-logic", "tech-to-md", "tech-faq-drill", "业务逻辑", "白皮书", "版本管理", "skill 维护", "业务逻辑审计", "需求文档", "业务逻辑抽取", "技术文档", "实现文档", "技术问答", "FAQ"],
+  "keywords": ["git-flow", "skill-release-manager", "business-logic", "tech-to-md", "tech-faq-drill", "test-report-html", "业务逻辑", "白皮书", "版本管理", "skill 维护", "业务逻辑审计", "需求文档", "业务逻辑抽取", "技术文档", "实现文档", "技术问答", "FAQ", "测试报告", "内测报告", "测试证据"],
   "skills": [
     "./skills/git-flow",
     "./skills/skill-release-manager",
@@ -18,6 +18,7 @@
     "./skills/business-logic-reqdoc",
     "./skills/business-logic-extractor",
     "./skills/tech-to-md",
-    "./skills/tech-faq-drill"
+    "./skills/tech-faq-drill",
+    "./skills/test-report-html"
   ]
 }

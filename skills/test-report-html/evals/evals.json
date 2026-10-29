@@ -1,0 +1,23 @@
+{
+  "skill_name": "test-report-html",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "后端单测和端到端都跑完了，帮我把测试结果整理成一份能直接发给甲方看的内测报告，最好是单文件 HTML，打开就能看。",
+      "expected_output": "在项目里建立或复用 test/ 目录，跑 collect_evidence.py 汇总 surefire/运行结果，写 test/report.json，build_report.py 生成单文件 HTML；数字全部来自 evidence，页脚列出读数来源。",
+      "files": []
+    },
+    {
+      "id": 2,
+      "prompt": "我们这个项目的冒烟脚本和端到端脚本散在好几个地方，还有一堆跑出来的 json 结果。帮我把它们统一收到 test 目录下，顺便根据这些结果生成一份测试报告。",
+      "expected_output": "用 init_test_dir.py 铺 test/{scripts,results}，把脚本收编（口令走环境变量、结果写进 test/results），再 collect_evidence.py + build_report.py 生成报告；给出迁移清单。",
+      "files": []
+    },
+    {
+      "id": 3,
+      "prompt": "更新一下 docs/internal-test-report.html，用例数已经变了，另外上周那条 UI 走查风险其实已经修了。",
+      "expected_output": "重跑 collect_evidence.py 拿到新读数，删掉已修复的风险条目，卡片数字改用占位符；未重新走查的层次写「未走查」而不是「全部通过」。",
+      "files": []
+    }
+  ]
+}
