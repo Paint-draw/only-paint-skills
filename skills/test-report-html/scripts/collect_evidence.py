@@ -24,7 +24,7 @@ import glob
 import json
 import os
 import sys
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from xml.etree import ElementTree as ET
 
@@ -72,9 +72,10 @@ def module_of(rel: Path) -> str:
     return parts[0] if len(parts) > 1 else "root"
 
 
-def scan(project: Path, includes: list[str]) -> tuple[list[dict], list[dict], list[str]]:
+def scan(project: Path, includes: list[str]) -> tuple[list[dict], list[dict], dict | None, list[str]]:
     files: dict[str, dict] = {}
     runs: list[dict] = []
+    coverage: dict | None = None
     warnings: list[str] = []
 
     patterns = list(PATTERNS) + [("custom", p) for p in includes]
@@ -110,11 +111,16 @@ def scan(project: Path, includes: list[str]) -> tuple[list[dict], list[dict], li
         except json.JSONDecodeError as exc:
             warnings.append(f"跳过无法解析的结果 {path.name}: {exc}")
             continue
+        kind = "e2e" if isinstance(data, list) else data.get("kind", "e2e")
+        # 覆盖统计不是业务闭环：它没有 items，也不进 runs，
+        # 否则「端到端 N 条」会被一条汇总 JSON 抬走。必须在 items 判空**之前**分流。
+        if kind == "coverage":
+            coverage = {**data, "path": path.relative_to(project).as_posix()}
+            continue
         items = data if isinstance(data, list) else (
             data.get("items") or data.get("flows") or data.get("runs") or [])
         if not items:
             continue
-        kind = "e2e" if isinstance(data, list) else data.get("kind", "e2e")
         failed = sum(1 for i in items if str(i.get("status", "")).upper() not in ("PASS", "OK", "SKIP"))
         runs.append({
             "name": path.stem,
@@ -123,13 +129,40 @@ def scan(project: Path, includes: list[str]) -> tuple[list[dict], list[dict], li
             "count": len(items),
             "failed": failed,
             "mtime": datetime.fromtimestamp(path.stat().st_mtime).isoformat(timespec="seconds"),
+            # 顶层标量原样带出来，报告里才能用 {{run.<name>.<字段>}} 引用自定义读数
+            **{k: v for k, v in data.items()
+               if not isinstance(v, (list, dict)) and k not in ("name", "path", "kind")},
             "items": items,
         })
 
-    return list(files.values()), runs, warnings
+    return list(files.values()), runs, coverage, warnings
 
 
-def summarize(files: list[dict], runs: list[dict]) -> dict:
+def mark_stale(files: list[dict], hours: int) -> list[dict]:
+    """找出「本轮大概率没跑」的报告文件。
+
+    判据取**本次扫描到的最新 mtime**作基准：同一批报告里，比它早 N 小时以上的，
+    多半是上一轮留下、这次没被覆盖的残留（已删测试类的产物就是这样混进来的）。
+    只认「同批里明显偏旧」，不针对单个文件——单个且旧的情况由 --max-age-days 管。
+    """
+    if len(files) < 2:
+        return []
+    newest = max(datetime.fromisoformat(f["mtime"]) for f in files)
+    cutoff = newest - timedelta(hours=hours)
+    stale = []
+    for f in files:
+        mtime = datetime.fromisoformat(f["mtime"])
+        if mtime < cutoff:
+            gap = newest - mtime
+            stale.append({
+                "path": f["path"],
+                "mtime": f["mtime"],
+                "reason": f"比本轮最新报告早 {gap.days} 天 {gap.seconds // 3600} 小时",
+            })
+    return stale
+
+
+def summarize(files: list[dict], runs: list[dict], coverage: dict | None = None) -> dict:
     total = {"tests": 0, "failures": 0, "errors": 0, "skipped": 0}
     modules: dict[str, dict] = {}
     for f in files:
@@ -166,6 +199,28 @@ def summarize(files: list[dict], runs: list[dict]) -> dict:
             "problems": sum(r["failed"] for r in matrix),
             "files": len(matrix),
         },
+        "negative": summarize_negative(coverage),
+    }
+
+
+def summarize_negative(coverage: dict | None) -> dict | None:
+    """覆盖统计。没登记就返回 None —— 报告里要显示「未统计」，不能显示 0。
+
+    0 会被读成「一条负向用例都没有」，那是完全不同的结论。
+    """
+    if not coverage:
+        return None
+    missing = coverage.get("files_without_negative") or []
+    return {
+        "method": coverage.get("method", "unknown"),
+        "method_note": coverage.get("method_note", ""),
+        "negative": coverage.get("negative"),
+        "boundary": coverage.get("boundary"),
+        "total_cases": coverage.get("total_cases"),
+        "files_scanned": coverage.get("files_scanned"),
+        "files_without_negative": len(missing),
+        "files_without_negative_sample": missing[:5],
+        "source": coverage.get("path", ""),
     }
 
 
@@ -177,12 +232,24 @@ def main() -> int:
                     help="额外的报告 glob（可重复）")
     ap.add_argument("--max-age-days", type=int, default=7,
                     help="证据比这更旧就告警")
+    ap.add_argument("--stale-after-hours", type=int, default=24,
+                    help="比本轮最新报告早这么多小时的，判为疑似残留")
+    ap.add_argument("--exclude-stale", action="store_true",
+                    help="把疑似残留从统计里剔除（默认仍计入）")
     ap.add_argument("--strict", action="store_true", help="有失败/报错时退出码 1")
     args = ap.parse_args()
 
     project = Path(args.project).resolve()
-    files, runs, warnings = scan(project, args.include)
-    summary = summarize(files, runs)
+    files, runs, coverage, warnings = scan(project, args.include)
+    stale = mark_stale(files, args.stale_after_hours)
+    if stale:
+        warnings.append(
+            f"{len(stale)} 份报告疑似本轮未运行（比最新报告早 {args.stale_after_hours} 小时以上）"
+            f"，会把用例数抬高；确认是残留就清掉，或加 --exclude-stale。")
+        if args.exclude_stale:
+            stale_paths = {s["path"] for s in stale}
+            files = [f for f in files if f["path"] not in stale_paths]
+    summary = summarize(files, runs, coverage)
 
     if not files and not runs:
         warnings.append("没有找到任何测试证据；报告里的数字将无从追溯。")
@@ -202,7 +269,7 @@ def main() -> int:
         "generated_at": datetime.now(timezone.utc).astimezone().isoformat(timespec="seconds"),
         "project": str(project),
         **summary,
-        "test_reports": {"files": files},
+        "test_reports": {"files": files, "stale": stale},
         "runs": runs,
         "warnings": warnings,
     }
@@ -221,6 +288,14 @@ def main() -> int:
     print(f"接口矩阵：{mt['files']} 份，{mt['calls']} 次调用，异常 {mt['problems']}")
     for r in runs:
         print(f"  {r['name']:24s} {r['kind']:6s} {r['count']:4d} 条  FAIL {r['failed']}")
+    neg = summary.get("negative")
+    if neg:
+        print(f"覆盖统计：负向 {neg['negative']} 条 / 边界 {neg['boundary']} 条"
+              f"（口径 {neg['method']}：{neg['method_note'] or '—'}）")
+    else:
+        print("覆盖统计：未登记（report.json 里用 quality 块会显示「未统计」）")
+    for s in stale:
+        print(f"  疑似残留 {s['path']}（{s['reason']}）")
     for w in warnings:
         print(f"⚠ {w}")
     print(f"\n已写 {out.relative_to(project).as_posix() if out.is_relative_to(project) else out}")

@@ -29,7 +29,7 @@ body {
 .hero h1 { margin: 8px 0 10px; font-size: 28px; line-height: 1.35; }
 .hero p { margin: 0; color: #cbd8ea; font-size: 13px; }
 .meta { display: flex; flex-wrap: wrap; gap: 10px 22px; margin-top: 16px; font-size: 12px; color: #b9c9de; }
-.cards { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin: 18px 0 6px; }
+.cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 12px; margin: 18px 0 6px; }
 .card { background: #fff; border: 1px solid var(--line); border-radius: 14px; padding: 16px 18px; }
 .card b { display: block; font-size: 26px; line-height: 1.2; color: var(--ink); }
 .card span { font-size: 12px; color: var(--muted); }

@@ -16,7 +16,7 @@
 | `business-logic-extractor` | 从代码抽取技术栈无关的可移植业务规格文档 |
 | `tech-to-md` | 把已实现的模块写成技术底层实现文档（机制链条 + 设计取舍 + 证据强度 + 速答卡） |
 | `tech-faq-drill` | 面试式问答演练：按技术文档 + 代码实现作答，答案可直接照念，并把问答沉淀成 `docs/FAQ` |
-| `test-report-html` | 把测试证据（surefire / JUnit / pytest 报告 + 运行时结果）整理成单文件 HTML 测试报告；脚本与结果统一收进项目 `test/`，数字全部可追溯 |
+| `test-report-html` | 把测试证据（surefire / JUnit / pytest 报告 + 运行时结果）整理成单文件 HTML 测试报告；脚本与结果统一收进项目 `test/`，数字全部可追溯；区分正向/负向覆盖，并对陈旧报告产物告警 |
 
 ## 目录结构
 

@@ -7,6 +7,19 @@
 
 ## [Unreleased]
 
+## [1.7.0] - 2026-10-30
+
+### Added
+- 【test-report-html】负向/边界覆盖可统计：`collect_evidence.py` 读可选的 `test/results/negative_coverage.json`（`kind: "coverage"`），产出 `evidence.negative` 与 `{{negative.negative}}` / `{{negative.boundary}}` 占位符。覆盖统计不混进 `runs`，不会抬高「端到端 N 条」。文件缺失时报告显示「未统计」而不是 0——「没统计」和「一条负向用例都没有」是两个结论
+- 【test-report-html】陈旧报告闸门：新增 `--stale-after-hours`（默认 24）与 `--exclude-stale`，以本轮最新 mtime 为基准找出「疑似本轮未运行」的残留报告并告警（已删测试类的 surefire 产物就是这样把用例数抬高的），默认仍计入、只点名
+- 【test-report-html】`{{run.<结果名>.<字段>}}` 占位符：`runs` 现在带结果 JSON 的顶层标量字段，`test/results/` 里的自定义读数（如前端探针的 `passed_assertions`）不必再手写
+- 【test-report-html】`quality` 块类型：五行覆盖质量表（负向/边界用例、统计口径、无负向断言的文件数、疑似陈旧报告、失败数），数字全部取自 evidence
+- 【test-report-html】`init_test_dir.py` 的 README 模板补 `negative_coverage.json` 约定
+
+### Fixed
+- 【test-report-html】`.cards` 从写死 4 列改为 `auto-fit`，5 张及以上卡片不再塌成一行
+- 【test-report-html】覆盖统计 JSON 没有 `items` 字段，被「没条数就跳过」截胡，负向数据永远登记不上；改为先按 `kind` 分流再判空
+
 ## [1.6.0] - 2026-10-29
 
 ### Added

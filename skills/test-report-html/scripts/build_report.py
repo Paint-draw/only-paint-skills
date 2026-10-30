@@ -53,6 +53,15 @@ def resolve(evidence: dict, key: str):
         for m in evidence.get("modules", []):
             if m["name"] == parts[1] and len(parts) > 2:
                 return m.get(parts[2])
+    if parts[0] == "negative":
+        neg = evidence.get("negative") or {}
+        return neg.get(parts[1])
+    if parts[0] == "run" and len(parts) >= 3:
+        # {{run.<name>.<字段>}}：test/results/<name>.json 的顶层字段
+        for r in evidence.get("runs", []):
+            if r.get("name") == parts[1]:
+                return r.get(".".join(parts[2:]))
+        return None
     return None
 
 
@@ -80,10 +89,48 @@ def render_table(block: dict, evidence: dict, missing: list[str], where: str) ->
     return f"{title}<table><tr>{head}</tr>{''.join(rows)}</table>"
 
 
+def render_quality(evidence: dict) -> str:
+    """覆盖质量块：数字全部取自 evidence，一个都不手写。
+
+    没登记覆盖统计时显示「未统计」而不是 0 —— 「没统计」和「一条负向用例都没有」
+    是两个完全不同的结论，混成一个 0 就是这份报告最容易制造的假象。
+    """
+    neg = evidence.get("negative")
+    stale = (evidence.get("test_reports") or {}).get("stale") or []
+    total = evidence.get("total") or {}
+
+    rows: list[tuple[str, str]] = []
+    if neg:
+        rows.append(("负向用例", str(neg.get("negative"))))
+        rows.append(("边界用例", str(neg.get("boundary"))))
+        rows.append(("统计口径", f"{neg.get('method', 'unknown')} —— {neg.get('method_note') or '未写说明'}"))
+        # 只留文件名：整条路径会把单元格撑到读不了
+        sample = "、".join(Path(p).name for p in (neg.get("files_without_negative_sample") or [])[:4])
+        rows.append(("无负向断言的测试文件",
+                     f"{neg.get('files_without_negative')} / {neg.get('files_scanned')}"
+                     + (f"（如 {sample}）" if sample else "")))
+    else:
+        rows.append(("负向用例", "未统计"))
+        rows.append(("边界用例", "未统计"))
+        rows.append(("统计口径", "未登记 test/results/negative_coverage.json"))
+        rows.append(("无负向断言的测试文件", "未统计"))
+    rows.append(("疑似陈旧报告", f"{len(stale)} 份"))
+    rows.append(("失败 / 报错", f"{total.get('failures', 0)} / {total.get('errors', 0)}"))
+
+    body = "".join(f"<tr><td>{html.escape(k)}</td><td>{html.escape(v)}</td></tr>" for k, v in rows)
+    table = f"<table><tr><th>维度</th><th>读数</th></tr>{body}</table>"
+    if not neg:
+        table += ('<div class="note">口径未登记 ≠ 没有负向用例。补一份 '
+                  'test/results/negative_coverage.json 再出报告，别把这一格读成 0。</div>')
+    return table
+
+
 def render_block(block: dict, evidence: dict, missing: list[str], where: str) -> str:
     kind = block.get("type", "paragraph")
     if kind == "table":
         return render_table(block, evidence, missing, where)
+    if kind == "quality":
+        return render_quality(evidence)
     if kind == "bullets":
         items = "".join(f"<li>{fill(i, evidence, missing, where)}</li>" for i in block.get("items", []))
         title = f"<h3>{fill(block['title'], evidence, missing, where)}</h3>" if block.get("title") else ""

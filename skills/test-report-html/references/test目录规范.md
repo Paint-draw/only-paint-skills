@@ -36,6 +36,28 @@ test/
 
 冒烟矩阵的产物要带 `"kind": "matrix"`（端到端脚本默认按 `e2e` 算）。两类分开计数：矩阵是「端点 × 角色」的调用次数，端到端是业务闭环条数，混在一个数字里会得出「本季度 179 条业务闭环」这种没法解释的读数。
 
+### 覆盖统计：`negative_coverage.json`（可选）
+
+报告里的「通过」有两种含义：正例真跑通了，和「反例被正确拒绝了」。不分开登记，业务方看不出区别。所以允许（不强制）放一份：
+
+```json
+{
+  "kind": "coverage",
+  "method": "marker",
+  "method_note": "pytest -m negative / mvn -Dgroups=negative 的用例数",
+  "negative": 825,
+  "boundary": 340,
+  "total_cases": 4006,
+  "files_scanned": 324,
+  "files_without_negative": ["tests/test_card_render.py"]
+}
+```
+
+- `method` 只有两个合法值：`marker`（用例上打了标记，数字准）、`pattern`（扫源码断言模式，**口径粗**）。无论哪种，`method_note` 都会原样印进报告，别把它写成宣传语。
+- `kind: "coverage"` 让它**不进 runs**——覆盖统计不是业务闭环条数。
+- 文件缺失时 evidence 里没有 `negative` 块，报告显示「未统计」，**不显示 0**。「没统计」和「一条负向用例都没有」是两个结论。
+- 怎么统计是各项目自己的事，skill 不代跑：pytest 用 `@pytest.mark.negative`，JUnit 用 `@Tag("negative")`，语言不通就自己写个小脚本。
+
 ## evidence.json
 
 由 `collect_evidence.py` 生成，不要手改。结构：
@@ -48,11 +70,20 @@ test/
   "modules": [{"name": "sai-bootstrap", "tests": 116, "classes": 23, "...": "..."}],
   "runs_total": {"count": 33, "failed": 0, "files": 3},
   "matrix_total": {"calls": 146, "problems": 0, "files": 3},
-  "test_reports": {"files": [{"path": "...", "framework": "maven-surefire", "tests": 5, "mtime": "..."}]},
-  "runs": [{"name": "e2e_full", "count": 22, "failed": 0, "items": ["..."]}],
+  "test_reports": {
+    "files": [{"path": "...", "framework": "maven-surefire", "tests": 5, "mtime": "..."}],
+    "stale": [{"path": "...", "mtime": "...", "reason": "比本轮最新报告早 9 天 3 小时"}]
+  },
+  "runs": [{"name": "e2e_full", "count": 22, "failed": 0, "passed_assertions": 1059, "items": ["..."]}],
+  "negative": {"method": "marker", "method_note": "...", "negative": 825, "boundary": 340,
+               "files_without_negative": 213, "files_without_negative_sample": ["..."], "source": "test/results/negative_coverage.json"},
   "warnings": ["..."]
 }
 ```
+
+- `test_reports.stale` 是「疑似本轮没跑、但还躺在目录里」的报告——它们会把用例数抬高。默认**仍计入**统计，只在 warnings 里点名；加 `--exclude-stale` 才剔除。
+- `runs[].*` 里除了固定字段，还带该结果 JSON 的**顶层标量字段**（如 `passed_assertions`），报告里用 `{{run.<name>.<字段>}}` 引用。
+- `negative` 整块可能不存在（没登记覆盖统计），消费者必须按「未统计」处理，不能当 0。
 
 改测试、改代码之后先重跑它，再出报告；跳过这一步，报告就是旧读数配新叙事。
 
@@ -83,6 +114,7 @@ test/
 | `paragraph` | `text` | 一段话 |
 | `bullets` | `items`、可选 `title` | 无序列表 |
 | `table` | `headers`、`rows`、可选 `title` | 单元格可内嵌 HTML（`<span class="tag ok">通过</span>`） |
+| `quality` | — | 覆盖质量表：负向/边界用例、统计口径、无负向断言的文件数、疑似陈旧报告、失败数。数字全取自 evidence，不用手写；没登记时显示「未统计」 |
 | `note` | `text` | 虚线提示框 |
 | `evidence` | — | 由脚本自动附在文末，不用手写 |
 
@@ -91,6 +123,7 @@ test/
 卡片 `value` 规则：
 
 - 优先用占位符：`{{tests.total}}`、`{{tests.classes}}`、`{{runs.count}}`、`{{matrix.calls}}`、`{{modules.<模块名>.tests}}`；
+- 自定义读数用 `{{run.<结果名>.<字段>}}`（如 `{{run.frontend_probe.passed_assertions}}`）、覆盖统计用 `{{negative.negative}}` / `{{negative.boundary}}`；
 - 确实要手写的数字必须带 `"source": "出处"`，否则 `build_report.py` 直接报错停下。
 
 这是唯一能挡住「数字手抄漂移」的闸门——上一版报告里 69 个用例挂了三个月，就是因为它是一个手写的数字。

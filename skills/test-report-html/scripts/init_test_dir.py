@@ -47,6 +47,9 @@ python <skill>/scripts/build_report.py --project . --out docs/internal-test-repo
 - 结果文件必须是 `[{"flow": "...", "status": "PASS|FAIL", "detail": "..."}]` 形状，
   报告里的「端到端 N 条」就数它。
 - 失败不要 try/except 吞掉；吞掉的那条在报告里就是一句假话。
+- 覆盖统计（可选）写 `results/negative_coverage.json`：`kind` 固定 `"coverage"`，
+  带上 `negative`（负向用例数）、`boundary`、`method` 与 `method_note`。口径见
+  `references/test目录规范.md`。没有这份文件时，报告里覆盖质量那几格显示「未统计」。
 """
 
 EVIDENCE_STUB = """{
